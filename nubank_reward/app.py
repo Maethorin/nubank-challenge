@@ -36,7 +36,7 @@ def invites_add():
     users_data = json.loads(request.form.get('users_data', '[]'))
     if not invited or not inviting:
         return redirect("/")
-    reward.add_users_data(inviting, invited, users_data)
+    users_data.extend(reward.add_users_data(inviting, invited, users_data))
     return set_points_response(users_data)
 
 
