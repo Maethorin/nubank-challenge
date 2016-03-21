@@ -21,7 +21,11 @@ With PIP installed, now you need to install virtualenv:
 
     $ sudo pip install virtualenv
    
-Now, you can can activate the virtualenv from this project folder:
+Now, you need to create a virtualenv. In the project folder type:
+
+    $ virtualenv venv
+
+After createsd, enable it typing:
 
     $ source venv/bin/activate
 
