@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>nuBank Challenge</title>
+    </head>
+    <body>
+        <h1>nuBank Challenge</h1>
+        <h2>Select the file with the invites input:</h2>
+        <form action="/invites/file" method="post" enctype="multipart/form-data" id="formFile">
+            <input type="file" placeholder="Input File" name="invites_file" id="invitesFile"/>
+            <input type="submit" />
+        </form>
+        <h2>Add new invitation:</h2>
+        <form action="/invites/add" method="post" id="formAdd">
+            <input type="text" placeholder="Inviting" name="inviting" id="inviting"/>
+            <input type="text" placeholder="Invited" name="invited" id="invited"/>
+            <input type="hidden" name="users_data" id="usersData" value="[]"/>
+            <input type="submit" />
+        </form>
+        <h2>Result:</h2>
+        <pre id="result"></pre>
+        <script type="application/javascript">
+            var formFile = document.getElementById('formFile');
+            var invitesFile = document.getElementById('invitesFile');
+            function updateResult(response) {
+                document.getElementById('usersData').setAttribute('value', response);
+                response = JSON.parse(response);
+                var innerHTML = [];
+                for (var i = 0; i < response.length; i++) {
+                    innerHTML.push(JSON.stringify(response[i]));
+                }
+                document.getElementById('result').innerHTML = innerHTML.join('\n');
+            }
+            formFile.onsubmit = function(event) {
+                event.preventDefault();
+                if (invitesFile.files.length == 0) {
+                    alert('Please, select a file');
+                    return false;
+                }
+                var file = invitesFile.files[0];
+                var formData = new FormData();
+                formData.append('invites_file', file, file.name);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', formFile.action, true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        updateResult(xhr.responseText);
+                    }
+                    else {
+                        alert('File not send! Please try again.');
+                    }
+                };
+                xhr.send(formData);
+            };
+            var formAdd = document.getElementById('formAdd');
+            formAdd.onsubmit = function(event) {
+                event.preventDefault();
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', formAdd.action, true);
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        updateResult(xhr.responseText);
+                    }
+                    else {
+                        alert('Could not add the invitation! Please try again.');
+                    }
+                };
+                var formData = new FormData();
+                formData.append('inviting', document.getElementById('inviting').value);
+                formData.append('invited', document.getElementById('invited').value);
+                formData.append('users_data', document.getElementById('usersData').value);
+                xhr.send(formData);
+            }
+        </script>
+    </body>
+</html>
