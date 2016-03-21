@@ -29,24 +29,26 @@ def build_users_data(data_input):
         if line:
             line = line.split(' ')
             line[1] = line[1].replace('\r', '')
-            add_user_data(line[0], line[1], users_data)
+            users_data.extend(add_users_data(line[0], line[1], users_data))
     return users_data
 
 
-def add_user_data(inviting, invited, users_data):
+def add_users_data(inviting, invited, users_data):
     can_be_invited = find_invited_by(users_data, invited) is None
     user_data = find_user_data(inviting, users_data)
+    return_data = []
     if user_data:
         if can_be_invited:
             user_data[inviting]['invitees'].append(invited)
     else:
         invited_by = find_invited_by(users_data, inviting)
         invitees = [invited] if can_be_invited else []
-        users_data.append(create_user_data(inviting, invited_by=invited_by, invitees=invitees))
+        return_data.append(create_user_data(inviting, invited_by=invited_by, invitees=invitees))
     user_data = find_user_data(invited, users_data)
     if not user_data:
-        invited_by = find_invited_by(users_data, invited)
-        users_data.append(create_user_data(invited, invited_by=invited_by))
+        invited_by = find_invited_by(users_data, invited) or inviting
+        return_data.append(create_user_data(invited, invited_by=invited_by))
+    return return_data
 
 
 def set_points(users_data, data_tree, user=None, level=0):
