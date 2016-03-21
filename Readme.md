@@ -29,6 +29,10 @@ After createsd, enable it typing:
 
     $ source venv/bin/activate
 
+Before run, you need to install the requirements:
+
+    $ pip install -r requirements.txt
+
 Finally, to run the application type:
     
     $ python run.py
